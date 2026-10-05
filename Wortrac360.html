@@ -149,7 +149,6 @@
         <div class="tag">Manufacturing Excellence & Work Intelligence Platform</div>
       </div>
     </div>
-    <button class="admin-btn" onclick="openAdmin()">⚙ Edit Links</button>
   </div>
 
   <section class="hero">
@@ -170,23 +169,6 @@
   <div id="empty" class="empty">No matching SBU found.</div>
 
   <div class="footer">Wortrac360 • Central Operations Launcher</div>
-</div>
-
-<div id="modal" class="modal" onclick="outsideClose(event)">
-  <div class="modal-box">
-    <div class="modal-top">
-      <div>
-        <h3>Manage SBU Links</h3>
-        <div class="tag">Paste the destination URL for each SBU. Changes are saved in this browser.</div>
-      </div>
-      <button class="close" onclick="closeAdmin()">×</button>
-    </div>
-    <div id="editList"></div>
-    <div class="modal-actions">
-      <button class="secondary" onclick="resetLinks()">Reset Links</button>
-      <button class="primary" onclick="saveLinks()">Save Changes</button>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -216,8 +198,7 @@ const DEFAULT_SBUs = [
 let activeFilter = "All";
 
 function getData(){
-  const saved = localStorage.getItem("wortrac360_sbus");
-  return saved ? JSON.parse(saved) : DEFAULT_SBUs;
+  return DEFAULT_SBUs;
 }
 
 function render(){
@@ -244,7 +225,7 @@ function render(){
       <div class="name">${x.name}</div>
       <div class="meta">${x.category} • ${x.type}</div>
       <button class="open-btn" ${ready ? "" : "disabled"} onclick="openSBU('${x.code.replace(/'/g,"\\'")}')">
-        ${ready ? "Open Workspace ↗" : "Add Link First"}
+        ${ready ? "Open Workspace ↗" : "Not linked"}
       </button>
     `;
     grid.appendChild(card);
@@ -268,47 +249,6 @@ function openSBU(code){
   }
 }
 
-function openAdmin(){
-  const list = document.getElementById("editList");
-  list.innerHTML = "";
-  getData().forEach((x,i) => {
-    const row = document.createElement("div");
-    row.className = "edit-row";
-    row.innerHTML = `
-      <label>${x.code}</label>
-      <input data-index="${i}" value="${(x.url || "").replace(/"/g,"&quot;")}" placeholder="Paste URL here..." />
-    `;
-    list.appendChild(row);
-  });
-  document.getElementById("modal").classList.add("show");
-}
-
-function closeAdmin(){
-  document.getElementById("modal").classList.remove("show");
-}
-
-function outsideClose(e){
-  if(e.target.id === "modal") closeAdmin();
-}
-
-function saveLinks(){
-  const data = getData();
-  document.querySelectorAll("#editList input").forEach(inp => {
-    const i = Number(inp.dataset.index);
-    data[i].url = inp.value.trim();
-  });
-  localStorage.setItem("wortrac360_sbus", JSON.stringify(data));
-  closeAdmin();
-  render();
-}
-
-function resetLinks(){
-  if(confirm("Reset all links to the original default configuration?")){
-    localStorage.removeItem("wortrac360_sbus");
-    openAdmin();
-    render();
-  }
-}
 
 render();
 </script>
