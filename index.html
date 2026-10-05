@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wortrac360 | Manufacturing Excellence Portal</title>
+<style>
+  :root{
+    --bg:#07111f;
+    --panel:#0d1a2b;
+    --panel2:#10223a;
+    --text:#f6f8fb;
+    --muted:#96a6ba;
+    --line:rgba(255,255,255,.09);
+    --accent:#4cc9f0;
+    --accent2:#7b61ff;
+    --success:#39d98a;
+    --warning:#ffca3a;
+    --shadow:0 20px 60px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,Segoe UI,Arial,sans-serif;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(76,201,240,.14), transparent 28%),
+      radial-gradient(circle at 90% 5%, rgba(123,97,255,.15), transparent 30%),
+      var(--bg);
+    color:var(--text);
+    min-height:100vh;
+  }
+  .wrap{max-width:1280px;margin:auto;padding:28px 22px 50px}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
+    margin-bottom:26px;
+  }
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{
+    width:54px;height:54px;border-radius:16px;
+    display:grid;place-items:center;font-weight:900;font-size:20px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 10px 30px rgba(76,201,240,.2);
+  }
+  h1{margin:0;font-size:29px;letter-spacing:-.5px}
+  .tag{color:var(--muted);font-size:13px;margin-top:4px}
+  .admin-btn{
+    border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);
+    padding:11px 14px;border-radius:12px;cursor:pointer;font-weight:700;
+  }
+  .hero{
+    background:linear-gradient(135deg,rgba(76,201,240,.09),rgba(123,97,255,.10));
+    border:1px solid var(--line);border-radius:22px;padding:26px;
+    box-shadow:var(--shadow);margin-bottom:24px;
+  }
+  .hero h2{font-size:30px;margin:0 0 8px}
+  .hero p{color:var(--muted);margin:0 0 20px;max-width:760px;line-height:1.55}
+  .tools{display:grid;grid-template-columns:1fr auto;gap:12px}
+  .search{
+    width:100%;padding:14px 16px;border-radius:13px;border:1px solid var(--line);
+    background:rgba(255,255,255,.05);color:var(--text);outline:none;font-size:14px;
+  }
+  .search::placeholder{color:#7f91a8}
+  .count{
+    display:flex;align-items:center;padding:0 15px;border-radius:13px;
+    border:1px solid var(--line);color:var(--muted);font-size:13px;
+  }
+  .filters{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0 4px}
+  .filter{
+    border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--muted);
+    padding:9px 13px;border-radius:999px;cursor:pointer;font-size:13px;font-weight:700;
+  }
+  .filter.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-color:transparent}
+  .grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  }
+  .card{
+    position:relative;overflow:hidden;
+    background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.025));
+    border:1px solid var(--line);border-radius:18px;padding:20px;
+    transition:.22s ease;min-height:195px;
+  }
+  .card:hover{transform:translateY(-4px);border-color:rgba(76,201,240,.32);box-shadow:0 18px 45px rgba(0,0,0,.2)}
+  .card:before{
+    content:"";position:absolute;right:-40px;top:-45px;width:130px;height:130px;border-radius:50%;
+    background:linear-gradient(135deg,rgba(76,201,240,.16),rgba(123,97,255,.10));
+  }
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:relative}
+  .icon{
+    width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+    background:rgba(76,201,240,.09);border:1px solid rgba(76,201,240,.18);font-size:22px;
+  }
+  .status{font-size:11px;border-radius:999px;padding:6px 9px;font-weight:800}
+  .status.ready{background:rgba(57,217,138,.12);color:#6de7ac}
+  .status.missing{background:rgba(255,202,58,.11);color:#ffd66b}
+  .code{font-size:22px;font-weight:900;margin-top:16px}
+  .name{font-size:13px;color:var(--muted);margin-top:4px;min-height:34px;line-height:1.4}
+  .meta{font-size:12px;color:#7f91a8;margin:10px 0 16px}
+  .open-btn{
+    width:100%;border:none;border-radius:12px;padding:12px 14px;
+    font-weight:800;cursor:pointer;color:white;
+    background:linear-gradient(135deg,var(--accent2),#4f8cff);
+  }
+  .open-btn[disabled]{cursor:not-allowed;background:#24354b;color:#72839a}
+  .empty{text-align:center;color:var(--muted);padding:50px 10px;display:none}
+
+  .modal{
+    display:none;position:fixed;inset:0;background:rgba(2,7,15,.78);
+    align-items:center;justify-content:center;padding:18px;z-index:20;
+  }
+  .modal.show{display:flex}
+  .modal-box{
+    width:min(850px,100%);max-height:88vh;overflow:auto;
+    background:#0b1727;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);
+  }
+  .modal-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}
+  .modal-top h3{margin:0}
+  .close{background:none;border:none;color:white;font-size:28px;cursor:pointer}
+  .edit-row{display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+  .edit-row label{font-weight:800}
+  .edit-row input{
+    width:100%;padding:11px 12px;border-radius:10px;border:1px solid var(--line);
+    background:rgba(255,255,255,.04);color:white;outline:none;
+  }
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .secondary,.primary{
+    padding:11px 15px;border-radius:11px;border:1px solid var(--line);font-weight:800;cursor:pointer
+  }
+  .secondary{background:transparent;color:white}
+  .primary{border:none;color:white;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+  .footer{text-align:center;color:#65778e;font-size:12px;margin-top:28px}
+  @media(max-width:930px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:620px){
+    .wrap{padding:18px 14px 36px}
+    .topbar{align-items:flex-start}.brand{align-items:flex-start}
+    h1{font-size:24px}.hero h2{font-size:24px}
+    .tools{grid-template-columns:1fr}.count{padding:11px 14px}
+    .grid{grid-template-columns:1fr}
+    .edit-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">W360</div>
+      <div>
+        <h1>Wortrac360</h1>
+        <div class="tag">Manufacturing Excellence & Work Intelligence Platform</div>
+      </div>
+    </div>
+    <button class="admin-btn" onclick="openAdmin()">⚙ Edit Links</button>
+  </div>
+
+  <section class="hero">
+    <h2>One Platform. Every Factory. Complete Visibility.</h2>
+    <p>Select an SBU to open its assigned workspace, dashboard, Google Sheet, or web application.</p>
+    <div class="tools">
+      <input id="search" class="search" placeholder="Search by SBU, business name, or category..." oninput="render()" />
+      <div id="count" class="count"></div>
+    </div>
+    <div class="filters">
+      <button class="filter active" data-filter="All" onclick="setFilter('All',this)">All</button>
+      <button class="filter" data-filter="Building Solutions" onclick="setFilter('Building Solutions',this)">Building Solutions</button>
+      <button class="filter" data-filter="Commodities" onclick="setFilter('Commodities',this)">Commodities</button>
+    </div>
+  </section>
+
+  <main id="grid" class="grid"></main>
+  <div id="empty" class="empty">No matching SBU found.</div>
+
+  <div class="footer">Wortrac360 • Central Operations Launcher</div>
+</div>
+
+<div id="modal" class="modal" onclick="outsideClose(event)">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div>
+        <h3>Manage SBU Links</h3>
+        <div class="tag">Paste the destination URL for each SBU. Changes are saved in this browser.</div>
+      </div>
+      <button class="close" onclick="closeAdmin()">×</button>
+    </div>
+    <div id="editList"></div>
+    <div class="modal-actions">
+      <button class="secondary" onclick="resetLinks()">Reset Links</button>
+      <button class="primary" onclick="saveLinks()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEFAULT_SBUs = [
+  {code:"ACCL", name:"Akij Cement Company Ltd.", category:"Building Solutions", type:"Cement", icon:"🏭",
+   url:"https://docs.google.com/spreadsheets/d/15RY3_9HEjsSc_BssCSgtLPdpiJEFs1Il0V8VQo9mWjk/edit?usp=sharing"},
+  {code:"APFIL", name:"Akij Poly Fibre Industry Ltd.", category:"Building Solutions", type:"Poly Fibre", icon:"🧵", url:""},
+  {code:"AIL", name:"Akij Ispat Limited", category:"Building Solutions", type:"Steel", icon:"⚙️", url:""},
+  {code:"ARMCL-01", name:"Akij Ready Mix Concrete Ltd. - Unit 01", category:"Building Solutions", type:"Ready Mix Concrete", icon:"🚧", url:""},
+  {code:"ARMCL-02", name:"Akij Ready Mix Concrete Ltd. - Unit 02", category:"Building Solutions", type:"Ready Mix Concrete", icon:"🚧", url:""},
+  {code:"ARMCL-03", name:"Akij Ready Mix Concrete Ltd. - Unit 03", category:"Building Solutions", type:"Ready Mix Concrete", icon:"🚧", url:""},
+  {code:"ARMCL-04", name:"Akij Ready Mix Concrete Ltd. - Unit 04", category:"Building Solutions", type:"Ready Mix Concrete", icon:"🚧", url:""},
+  {code:"ARMCL-05", name:"Akij Ready Mix Concrete Ltd. - Chattogram", category:"Building Solutions", type:"Ready Mix Concrete", icon:"🚧",
+   url:"https://docs.google.com/spreadsheets/d/1W9CWi21tYY3kVJpCfrIfAUioJVPBAz2ngN_csGxBtVQ/edit?usp=sharing"},
+  {code:"AEL-FLOUR", name:"Akij Essentials - Flour & Dal", category:"Commodities", type:"Flour & Dal", icon:"🌾", url:""},
+  {code:"AAFL", name:"Akij Agro Feed Ltd.", category:"Commodities", type:"Agro Feed", icon:"🌽", url:""},
+  {code:"M.OIL", name:"Akij Essentials - Mustard Oil", category:"Commodities", type:"Mustard Oil", icon:"🫙",
+   url:"https://docs.google.com/spreadsheets/d/1mVDxvRwYr6F1BZXbylakyEceFdl_ATpvi5KR4M30IlQ/edit?usp=sharing"},
+  {code:"MRML", name:"Rice Mill", category:"Commodities", type:"Rice", icon:"🍚", url:""},
+  {code:"ABSL", name:"ABSL", category:"Building Solutions", type:"Operations", icon:"🚢", url:""},
+  {code:"ALEL", name:"Akij Light Engineering Ltd.", category:"Commodities", type:"Light Engineering", icon:"💡", url:""}
+];
+
+let activeFilter = "All";
+
+function getData(){
+  const saved = localStorage.getItem("wortrac360_sbus");
+  return saved ? JSON.parse(saved) : DEFAULT_SBUs;
+}
+
+function render(){
+  const data = getData();
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  const filtered = data.filter(x => {
+    const matchesFilter = activeFilter === "All" || x.category === activeFilter;
+    const text = `${x.code} ${x.name} ${x.category} ${x.type}`.toLowerCase();
+    return matchesFilter && text.includes(q);
+  });
+
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  filtered.forEach(x => {
+    const ready = x.url && x.url.trim().length > 0;
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="icon">${x.icon || "🏢"}</div>
+        <span class="status ${ready ? "ready" : "missing"}">${ready ? "LINKED" : "NO LINK"}</span>
+      </div>
+      <div class="code">${x.code}</div>
+      <div class="name">${x.name}</div>
+      <div class="meta">${x.category} • ${x.type}</div>
+      <button class="open-btn" ${ready ? "" : "disabled"} onclick="openSBU('${x.code.replace(/'/g,"\\'")}')">
+        ${ready ? "Open Workspace ↗" : "Add Link First"}
+      </button>
+    `;
+    grid.appendChild(card);
+  });
+
+  document.getElementById("empty").style.display = filtered.length ? "none" : "block";
+  document.getElementById("count").textContent = `${filtered.length} of ${data.length} SBUs`;
+}
+
+function setFilter(filter, btn){
+  activeFilter = filter;
+  document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  render();
+}
+
+function openSBU(code){
+  const item = getData().find(x => x.code === code);
+  if(item && item.url){
+    window.open(item.url, "_blank", "noopener,noreferrer");
+  }
+}
+
+function openAdmin(){
+  const list = document.getElementById("editList");
+  list.innerHTML = "";
+  getData().forEach((x,i) => {
+    const row = document.createElement("div");
+    row.className = "edit-row";
+    row.innerHTML = `
+      <label>${x.code}</label>
+      <input data-index="${i}" value="${(x.url || "").replace(/"/g,"&quot;")}" placeholder="Paste URL here..." />
+    `;
+    list.appendChild(row);
+  });
+  document.getElementById("modal").classList.add("show");
+}
+
+function closeAdmin(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+function outsideClose(e){
+  if(e.target.id === "modal") closeAdmin();
+}
+
+function saveLinks(){
+  const data = getData();
+  document.querySelectorAll("#editList input").forEach(inp => {
+    const i = Number(inp.dataset.index);
+    data[i].url = inp.value.trim();
+  });
+  localStorage.setItem("wortrac360_sbus", JSON.stringify(data));
+  closeAdmin();
+  render();
+}
+
+function resetLinks(){
+  if(confirm("Reset all links to the original default configuration?")){
+    localStorage.removeItem("wortrac360_sbus");
+    openAdmin();
+    render();
+  }
+}
+
+render();
+</script>
+</body>
+</html>
